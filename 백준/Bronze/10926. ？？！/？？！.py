@@ -1,0 +1,2 @@
+print(input(), end='')
+print('??!')
