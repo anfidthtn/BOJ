@@ -1,0 +1,43 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+/**
+ *P2493_gold5_탑
+ */
+public class Main {
+	public static void main(String[] args) throws NumberFormatException, IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int n = Integer.parseInt(br.readLine());
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		StringBuilder sb = new StringBuilder();
+		
+		/**
+		 * stack에는 [높이, 인덱스] 쌍을 저장
+		 * 새로 들어온 녀석이 top에 있는 높이보다 낮으면 top의 인덱스 출력하고, top을 증가시키고 stack에 현재 높이, 위치 저장
+		 * 새로 들어온 녀석이 top에 있는 높이보다 높으면 top을 줄임 (top이 -1이 되거나 높은 녀석이 나올 때까지)
+		 * 이 때, -1이 되면 0을 출력하고 top을 증가(0으로)시키고 현재 높이, 위치 저장
+		 */
+		int[][] stack = new int[n + 1][2];
+		int top = -1;
+		for (int i = 0; i < n; i++) {
+			int height = Integer.parseInt(st.nextToken());
+			// 스택이 다 비거나, 더 높은 높이가 나올 때까지 top을 줄임
+			while (top >= 0 && stack[top][0] < height) top--;
+			if (top == -1) {
+				// 수신지점이 없으니 0
+				sb.append("0 ");
+			}
+			else {
+				// 수신지점이 있으니 수신지점 출력 (인덱스 + 1)
+				sb.append(stack[top][1] + 1);
+				sb.append(" ");
+			}
+			top++;
+			stack[top][0] = height;
+			stack[top][1] = i;
+		}
+		System.out.print(sb.toString());
+	}
+}
