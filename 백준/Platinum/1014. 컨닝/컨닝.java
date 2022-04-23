@@ -1,97 +1,86 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
+	static int[] dr = { -1, 0, 1, -1, 0, 1 };
+	static int[] dc = { -1, -1, -1, 1, 1, 1 };
+
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int t = Integer.parseInt(br.readLine());
 		StringBuilder sb = new StringBuilder();
-		StringTokenizer st;
 		for (int tNum = 1; tNum <= t; tNum++) {
-			st = new StringTokenizer(br.readLine());
-
+			StringTokenizer st = new StringTokenizer(br.readLine());
 			int N = Integer.parseInt(st.nextToken());
 			int M = Integer.parseInt(st.nextToken());
-
-			char[][] map = new char[N][M];
-
-			for (int i = 0; i < N; i++) {
-				String str = br.readLine();
-				for (int j = 0; j < M; j++) {
-					map[i][j] = str.charAt(j);
+			int count = 0;
+			char[][] map = new char[N + 2][M + 2];
+			for (int i = 1; i <= N; i++) {
+				String line = br.readLine();
+				for (int j = 1; j <= M; j++) {
+					map[i][j] = line.charAt(j - 1);
+					if (map[i][j] == '.')
+						count++;
 				}
 			}
-			int[][] saved = new int[N][1 << M];
-			sb.append(getMax(map, saved, 0, 0)).append("\n");
+			List<Integer>[][] link = new LinkedList[N + 2][M + 2];
+			for (int j = 1; j <= M; j += 2) {
+				for (int i = 1; i <= N; i++) {
+					if (map[i][j] == '.') {
+						link[i][j] = new LinkedList<>();
+						for (int d = 0; d < 6; d++) {
+							if (map[i + dr[d]][j + dc[d]] == '.') {
+								link[i][j].add(getIdx(i + dr[d], j + dc[d]));
+							}
+						}
+					}
+				}
+			}
+			int[][] matched = new int[N + 2][M + 2];
+			for (int j = 1; j <= M; j += 2) {
+				for (int i = 1; i <= N; i++) {
+					if (map[i][j] == '.') {
+						boolean[][] visited = new boolean[N + 2][M + 2];
+						if (matching(link, i, j, matched, visited)) {
+							count--;
+						}
+					}
+				}
+			}
+			sb.append(count).append("\n");
 		}
 		System.out.print(sb.toString());
 	}
 
-	public static int getMax(char[][] map, int[][] saved, int beforeCase, int nowIdx) {
-		int N = map.length;
-		if (nowIdx == N) {
-			return 0;
-		}
-
-		// 이미 구해진 최대값이 있다면 구한 것으로 리턴
-		if (saved[nowIdx][beforeCase] > 0)
-			return saved[nowIdx][beforeCase];
-		// int는 0으로 자동초기화가 되어 0개의 경우와 구분하기 위해서 구했는데 0인 곳은 -1로 마킹
-		// 따로 -1같은걸로 초기화를 하기에는 오버헤드가 더 날 수 있음
-		if (saved[nowIdx][beforeCase] == -1) {
-			return 0;
-		}
-		// 구하지 않은 경우는 모두 탐색
-		int M = map[0].length;
-		for (int nowCase = 0; nowCase < 1 << M; nowCase++) {
-			// 이 경우 이번 라인에 몇 명 앉는지.
-			int bitCount = 0;
-			// 해당 자리에 올 수 있는지 비트별 검사
-			boolean able = true;
-			for (int bit = 0; bit < M; bit++) {
-				if ((nowCase & (1 << bit)) != 0) {
-					if (map[nowIdx][bit] == 'x') {
-						able = false;
-						break;
-					}
-					if (bit > 0) {
-						// 가장 오른쪽 비트가 아니면 오른쪽 위, 오른쪽에 비트가 있었는지 확인
-						if ((beforeCase & (1 << (bit - 1))) != 0) {
-							able = false;
-							break;
-						}
-						if ((nowCase & (1 << (bit - 1))) != 0) {
-							able = false;
-							break;
-						}
-					}
-					if (bit < M - 1) {
-						// 가장 왼쪽 비트가 아니면 왼쪽 위, 왼쪽에 비트가 있었는지 확인
-						if ((beforeCase & (1 << (bit + 1))) != 0) {
-							able = false;
-							break;
-						}
-						if ((nowCase & (1 << (bit + 1))) != 0) {
-							able = false;
-							break;
-						}
-					}
-					bitCount++;
-				}
-			}
-			if (!able)
+	public static boolean matching(List<Integer>[][] link, int row, int col, int[][] matched, boolean[][] visited) {
+		for (Integer Idx : link[row][col]) {
+			int nowRow = getRow(Idx);
+			int nowCol = getCol(Idx);
+			if (visited[nowRow][nowCol])
 				continue;
-			// 가능한 경우이면 최대치 갱신
-			saved[nowIdx][beforeCase] = Math.max(saved[nowIdx][beforeCase],
-					bitCount + getMax(map, saved, nowCase, nowIdx + 1));
+			visited[nowRow][nowCol] = true;
+			if (matched[nowRow][nowCol] == 0 || matching(link, getRow(matched[nowRow][nowCol]),
+					getCol(matched[nowRow][nowCol]), matched, visited)) {
+				matched[nowRow][nowCol] = getIdx(row, col);
+				return true;
+			}
 		}
-		if (saved[nowIdx][beforeCase] == 0) {
-			saved[nowIdx][beforeCase] = -1;
-			return 0;
-		} else {
-			return saved[nowIdx][beforeCase];
-		}
+		return false;
+	}
+
+	public static int getIdx(int row, int col) {
+		return (row << 8) + col;
+	}
+
+	public static int getRow(int Idx) {
+		return Idx >> 8;
+	}
+
+	public static int getCol(int Idx) {
+		return Idx & ((1 << 8) - 1);
 	}
 }
