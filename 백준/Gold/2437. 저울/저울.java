@@ -18,16 +18,14 @@ public class Main {
 		int idx = 0;
 		int target = 1;
 		while(true) {
-			if (sum < target) {
-				if (idx == N || weights[idx] > target) {
-					System.out.println(target);
-					return;
-				}
-				else {
-					sum += weights[idx++];
-				}
+			if (idx == N || weights[idx] > target) {
+				System.out.println(target);
+				return;
 			}
-			target++;
+			else {
+				sum += weights[idx++];
+			}
+			target = sum + 1;
 		}
 	}
 }
