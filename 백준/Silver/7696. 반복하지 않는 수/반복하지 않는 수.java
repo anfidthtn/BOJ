@@ -3,39 +3,55 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Main {
+	static int[] nums;
+	static int idx;
+	static final int MAXNUM = 1_000_000;
+
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int[] nums = new int[1_000_001];
-		int now = 1;
-		int count = 0;
-		nums[1] = 1;
+		nums = new int[MAXNUM + 1];
+		idx = 1;
+
+		for (int digit = 1; digit <= 8; digit++) {
+			boolean[] used = new boolean[10];
+			int[] numArr = new int[digit];
+			for (int first = 1; first <= 9 && idx <= MAXNUM; first++) {
+				used[first] = true;
+				numArr[0] = first;
+				dfs(numArr, used, digit, 1);				
+				used[first] = false;
+			}
+		}
 		while(true) {
-			int n = Integer.parseInt(br.readLine());
-			if (n == 0) {
+			int num = Integer.parseInt(br.readLine());
+			if (num == 0) {
 				break;
 			}
-			if (n < now) {
-				System.out.println(nums[n]);
-				continue;
-			}
-			while(now <= n) {
-				count++;
-				if (check(count)) {
-					nums[now++] = count; 
-				}
-			}
-			System.out.println(nums[n]);
+			System.out.println(nums[num]);
 		}
 	}
-	public static boolean check(int num) {
-		int valid = 0;
-		while(num > 0) {
-			if ((valid & (1 << (num % 10))) != 0) {
-				return false;
-			}
-			valid += 1 << (num % 10);
-			num /= 10;
+
+	public static void dfs(int[] numArr, boolean[] used, int digit, int nextIdx) {
+		if (idx > MAXNUM) {
+			return;
 		}
-		return true;
+		if (nextIdx == digit) {
+			int num = 0;
+			for(int i = 0; i < digit; i++) {
+				num *= 10;
+				num += numArr[i];
+			}
+			nums[idx++] = num;
+			return;
+		}
+		for (int num = 0; num <= 9; num++) {
+			if (used[num]) {
+				continue;
+			}
+			used[num] = true;
+			numArr[nextIdx] = num;
+			dfs(numArr, used, digit, nextIdx + 1);
+			used[num] = false;
+		}
 	}
 }
