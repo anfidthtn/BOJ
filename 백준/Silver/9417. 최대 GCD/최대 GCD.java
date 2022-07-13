@@ -11,7 +11,7 @@ public class Main {
 		StringBuilder sb = new StringBuilder();
 		for (int tNum = 1; tNum <= t; tNum++) {
 			int[] nums = Stream.of(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-			int max = 0;
+			int max = 1;
 			for (int a = 0; a < nums.length; a++) {
 				for (int b = a + 1; b < nums.length; b++) {
 					max = Math.max(max, getGCD(nums[a], nums[b]));
