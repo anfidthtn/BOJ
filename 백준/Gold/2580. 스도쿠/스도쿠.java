@@ -21,23 +21,25 @@ public class Main {
                 }
             }
         }
-        dfs(0);
+        dfs(0, -1);
         for(int i = 0; i < 9; i++) {
-        	for(int j = 0; j <  9; j++) {
+        	for(int j = 0; j < 9; j++) {
         		System.out.print(map[i][j] + " ");
         	}
         	System.out.println();
         }
     }
 
-    public static boolean dfs(int linearIdx){
-        if (linearIdx == 81){
+    public static boolean dfs(int row, int col){
+    	if(++col == 9) {
+    		col = 0;
+    		row++;
+    	}
+        if (row == 9){
             return true;
         }
-        int row = linearIdx / 9;
-        int col = linearIdx % 9;
         if (map[row][col] > 0){
-            return dfs(linearIdx + 1);
+            return dfs(row, col);
         }
         else{
             for(int i = 1; i <= 9; i++){
@@ -54,7 +56,7 @@ public class Main {
                 checkArr[row][i] = true;
                 checkArr[9 + col][i] = true;
                 checkArr[18 + getSection(row,col)][i] = true;
-                if(dfs(linearIdx + 1)){
+                if(dfs(row, col)){
                     return true;
                 }
                 checkArr[row][i] = false;
@@ -64,9 +66,6 @@ public class Main {
             }
         }
         return false;
-    }
-    public static int normToLine(int row, int col){
-        return row * 9 + col;
     }
     public static int getSection(int row, int col){
         return row / 3 * 3 + col / 3;
