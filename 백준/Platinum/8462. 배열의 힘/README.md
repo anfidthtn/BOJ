@@ -8,7 +8,7 @@
 
 ### 분류
 
-mo's(mo), 오프라인 쿼리(offline_queries), 제곱근 분할법(sqrt_decomposition)
+mo's(mo), 오프라인 쿼리(offline_queries)
 
 ### 문제 설명
 
