@@ -25,7 +25,6 @@ public class Main {
 		for(int i = 0; i < 10; i++) {			
 			makeList(values[i], 0, 10);
 		}
-		answerList.sort(Long::compareTo);
 		try {
 			System.out.println(answerList.get(N - 1));
 		}
