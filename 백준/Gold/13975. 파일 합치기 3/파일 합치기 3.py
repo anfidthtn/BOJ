@@ -13,8 +13,9 @@ for _ in range(int(input())):
     heapq.heapify(heap)
     for value in values:
         if value == 0:
-            # 0장짜리는 할 필요가 없다.
-            continue
+            # 0장짜리는 2개이상 할 필요가 없다.
+            if value in valuesCount:
+                continue
         if value in valuesCount:
             # 이미 나온 값이면 나온 횟수 더해주기
             valuesCount[value] += 1
