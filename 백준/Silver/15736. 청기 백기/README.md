@@ -8,7 +8,7 @@
 
 ### 분류
 
-애드 혹(ad_hoc), 수학(math), 정수론(number_theory)
+수학(math), 정수론(number_theory)
 
 ### 문제 설명
 
