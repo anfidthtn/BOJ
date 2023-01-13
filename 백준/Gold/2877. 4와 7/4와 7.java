@@ -1,1 +1,1 @@
-import java.util.*;public class Main{public static void main(String[]args){Scanner s=new Scanner(System.in);int K=s.nextInt(),x=2;while(K>x){K-=x;x*=2;}x/=2;K--;for(;x>0;x/=2){System.out.print((K&x)>0?7:4);}}}
+import java.util.*;class Main{public static void main(String[]a){int K=new Scanner(System.in).nextInt(),x=1;for(;K>x*2;K-=x*=2);K--;for(;x>0;x/=2){System.out.print((K&x)>0?7:4);}}}
