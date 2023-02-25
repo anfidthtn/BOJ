@@ -8,7 +8,7 @@
 
 ### 분류
 
-이분 매칭(bipartite_matching), 최대 유량(flow), 최대 유량 최소 컷 정리(mfmc)
+이분 매칭(bipartite_matching)
 
 ### 문제 설명
 
