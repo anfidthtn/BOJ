@@ -1,6 +1,6 @@
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 
 class Solution {
 	List<Integer>[] list;
@@ -13,7 +13,7 @@ class Solution {
 		int num = N;
 		for (int i = 1; i <= 7; i++) {
 			list[i] = new ArrayList<>();
-			if (i != 7) {
+			if (i < 7) {
 				visited[num] = i;
 				list[i].add(num);
 			}
